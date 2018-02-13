@@ -11,9 +11,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
 
 // routes
-app.get('/', function(req, res) {
-    res.send('hi get');
-})
+// app.get('/', function(req, res) {
+//     res.send('hi get');
+// })
 
 // get all
 app.get('/pads', function(req, res) {
@@ -54,7 +54,7 @@ app.post('/pad', function(req, res) {
     newPad.category = req.body.category
     newPad.save(function(error, result) {
         if(error) {
-            res.send('error on save')
+            res.send('error on send')
         } else {
             console.log(result)
             res.send(result)
@@ -62,6 +62,49 @@ app.post('/pad', function(req, res) {
     })
 })
 
+// simplified, less error prone version of above
+app.post('/pad2', function(req, res) {
+    Pad.create(req.body, function(error, result) {
+        if(error) {
+            res.send('error on send')
+        } else {
+            console.log(result)
+            res.send(result)
+        }
+    })
+})
+
+// update item's 'title
+app.put('/pad/:id', function(req, res) {
+    Pad.findOneAndUpdate({
+        _id: req.params.id
+    }, 
+    {$set: {title: req.body.title}}, 
+    {upsert: true}, 
+        function(error, result) {
+            if(error) {
+                console.log('error occured')
+            } else {
+                console.log(result)
+                // res.send(result)
+                res.sendStatus(204)
+            }
+    })
+})
+
+// delete item
+app.delete('/pad/:id', function(req, res) {
+    Pad.findOneAndRemove({
+        _id: req.params.id
+    }, function(error, result) {
+        if(error) {
+            res.send('error occured')
+        } else {
+            console.log(result)
+            res.status(204)
+        }
+    })
+})
 
 app.listen(port, function() {
     console.log('Server listing on port', port);
