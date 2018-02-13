@@ -13,6 +13,7 @@ app.get('/', function(req, res) {
     res.send('hi get');
 })
 
+// get all
 app.get('/pads', function(req, res) {
     console.log('get everything.')
     Pad.find({})
@@ -26,6 +27,23 @@ app.get('/pads', function(req, res) {
             }
         })
 })
+
+// get one
+app.get('/pads/:id', function(req, res) {
+    console.log('get one item')
+    Pad.findOne({
+        _id: req.params.id
+    })
+    .exec(function(error, result) {
+        if(error){
+            res.send('error occured')
+        } else {
+            console.log(result)
+            res.json(result)
+        }
+    })
+})
+
 
 app.listen(port, function() {
     console.log('Server listing on port', port);
