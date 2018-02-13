@@ -7,6 +7,8 @@ const db = 'mongodb://localhost/example';
 const port = 8080;
 
 mongoose.connect(db);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}))
 
 // routes
 app.get('/', function(req, res) {
@@ -40,6 +42,22 @@ app.get('/pads/:id', function(req, res) {
         } else {
             console.log(result)
             res.json(result)
+        }
+    })
+})
+
+// add one
+app.post('/pad', function(req, res) {
+    const newPad = new Pad()
+    newPad.title = req.body.title
+    newPad.author = req.body.author
+    newPad.category = req.body.category
+    newPad.save(function(error, result) {
+        if(error) {
+            res.send('error on save')
+        } else {
+            console.log(result)
+            res.send(result)
         }
     })
 })
